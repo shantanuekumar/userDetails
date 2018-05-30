@@ -26,4 +26,4 @@ $ php artisan key:generate
 
 $ php artisan serve
 
-9.Run from localhost laravel_signup/user data/signup.html
+9.Run from localhost laravel_signup/user data/login.html
