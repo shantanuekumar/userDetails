@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Profile Viewer</title>
+	<style type="text/css">
+	body{
+		margin:0px; 
+		background-color: #b9ccbf; 
+	}
+	header{
+		height: 70px;
+		width:100%;
+		background-color: #8e4d4d;
+	}
+	img{
+		margin:20px 0 0 20px;
+	}
+	p{
+		font-family: arial;
+		font-size: 20px;
+	}
+	content{
+		text-align: center;
+		position: relative;
+		top: 60px;
+	}
+	form{
+		margin-top: 30px;
+	}
+	input,textarea{
+		display: block;	
+		margin: 30px 0 0 30px; 
+		margin-left: 43%;
+		padding: 10px;
+		border: none;
+	}
+	#submit{
+		border: none;
+		border-radius: 10px;
+		padding:10px;
+		background-color: #143d15;
+		color: white;
+
+	}
+	input:focus,textarea:focus{
+		outline: none;
+		border:1px solid #965555;
+	}
+	#name_conf,#confirm{
+		color: #ba3737;
+		display: none;
+	}
+	#name{
+		margin-bottom: 20px;
+	}
+	#image{
+		margin-top: 10px;
+		padding: 20px;
+	}
+	#img{
+		
+		border-radius:20px;
+	}
+	#preview{
+		color: #ba3737;
+	}
+	
+</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+	<header>
+		<img src="scared.png">
+	</header>
+	<content>
+		<p>User Profile</p>
+			<form method="post" enctype="multipart/form-data" id="form">
+			<label for="image">Upload image</label>
+		    <input type="file" class="form-control" name="image" id="image" onchange="previewFile()" accept="image/*">
+		    <div id="preview"></div>
+			<input type="text" name="name" placeholder="Name" id="name">
+			<span id="name_conf">Enter valid name </span>			
+			<textarea placeholder="Description" name="description" rows="6" id="description"></textarea>
+			<input type="submit" value="update" id="submit">		
+			</form>
+			
+	</content>
+</body>
+<script type="text/javascript">
+
+  var img;	
+
+  function previewFile() {
+
+  var preview = document.querySelector('#preview');
+  var files   = document.querySelector('input[type=file]').files[0];
+
+  if(files.size <= 64000){
+
+  function readAndPreview(file) {
+
+    if ( /\.(jpe?g|png|gif)$/i.test(file.name) ) {
+      var reader = new FileReader();
+
+      reader.addEventListener("load", function () {
+        var image = new Image();
+        image.height = 100;
+        image.title = file.name;
+        image.src = this.result;
+        img = image.src;
+        preview.innerHTML = "";
+        preview.appendChild( image );
+
+      }, false);
+
+      reader.readAsDataURL(file);
+    }
+    else{
+    	preview.innerHTML = "upload .jpeg,.jpg,.png,.gif"; 
+    }
+
+  }
+
+    readAndPreview(files);
+  }
+	else{
+		preview.innerHTML = "file size should be 64kb or less";
+	}
+  
+}
+
+	
+	$('#form').submit(function(event) 
+	{
+			
+		event.preventDefault();
+
+		img = (img == undefined)?"":img;  
+	    
+	    var description = document.getElementById('description').value;
+		var name = document.getElementById('name').value;
+		
+
+		function getUrlVars() {
+	    var vars = {};
+	    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
+	    function(m,key,value) {
+	      vars[key] = value;
+	    });
+	    return vars;
+	  	}
+
+	  	var email = getUrlVars()["email"];
+	  
+		if(!/^[A-Za-z ]{1,20}$/.test(name)){
+			document.getElementById('name_conf').style.display = 'block';
+		}
+		
+		else{
+			  $("#submit").prop("disabled", true);
+			  $.ajax({
+			  type: "POST",
+			  enctype: 'multipart/form-data',
+			  url: "http://localhost:8000/api/auth/update",			  
+			  data:{
+			  			name:name,
+			  			email:email,
+			  			image:img,
+			  			description:description
+			  			
+			  	   },
+			  success: function(res){
+				  console.log(res);
+			  	window.location.replace("profile.html?email="+email);
+				  
+			  }
+			
+			});
+		}	
+
+	});
+	
+</script>
+</html>

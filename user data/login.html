@@ -1,0 +1,135 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+    <title>Document</title>
+    <style>
+    body{
+		font-family: arial;
+		margin:0px; 
+		background-color: #b9ccbf; 
+	}
+	header{
+		height: 70px;
+		width:100%;
+		background-color: #8e4d4d;
+	}
+	img{
+		margin:20px 0 0 20px;
+	}
+	p{
+		font-family: arial;
+		font-size: 20px;
+	}
+	content{
+		text-align: center;
+		position: relative;
+		top: 120px;
+	}
+	form{
+		margin-top: 30px;
+	}
+	input{
+		display: block;
+		margin: 30px 0 0 30px; 
+		margin-left: 45%;
+		padding: 10px;
+		border:none;
+
+	}
+	#login{
+		border: none;
+		border-radius: 10px;
+		padding:10px;
+		background-color: #143d15;
+		color: white;
+
+	}
+	input:focus{
+		outline: none;
+		border:1px solid #965555;
+	}
+	#email_conf,#pass_conf,#confirm{
+		color: #ba3737;
+		display: none;
+	}
+	#email{
+		margin-bottom: 20px;
+	}
+    </style>
+</head>
+<body>
+    <header>
+		<img src="scared.png">
+	</header>
+	<content>
+		<p>Log in. Not registered <a href="signup.html">Sign up</a></p>
+			<form method="post" enctype="multipart/form-data" id="form">
+			<input type="email" name="email" placeholder="Email" id="email">
+			<span id="email_conf">email not registered</span>
+		    <input type="password" name="password" placeholder="Password" id="password">
+            <span id="pass_conf">password did not match the pattern, password must be 8 characters long</span>	
+            <input type="submit" value="login"  id="login">
+			</form>
+	</content>
+</body>
+<script>
+	document.getElementById('login').onclick = function(event){
+
+event.preventDefault();
+
+var email = document.getElementById('email').value;
+var password = document.getElementById('password').value;
+
+
+if(!/^([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$)$/.test(email)){
+   document.getElementById('email_conf').style.display = 'block';
+}
+
+else if(!/^[A-Za-z0-9]{8,}$/.test(password)) {
+   document.getElementById('pass_conf').style.display = 'block';
+}
+
+else{
+	   $("#submit").prop("disabled", true);
+   $.ajax({
+	 type: "POST",
+	 url: "http://localhost:8000/api/auth/login",			  
+	 data: {
+				 email:email,
+				 password:password
+				
+								   
+			 },
+	 success: function(res){
+		 
+		 console.log(res);
+		 var mail = res.data.email;
+		 window.location.replace("profile.html?email="+email);
+	 },
+	 error: function(err){
+		
+		 if(err.status == 401){
+		 document.getElementById('pass_conf').innerHTML = 'password not set. please <a href="set_password.html?email='+email+'">set</a> the password';
+		 document.getElementById('pass_conf').style.display = 'inline';
+		 }
+	    else if(err.status == 404){
+		document.getElementById('pass_conf').innerHTML = 'email not registered';
+		document.getElementById('pass_conf').style.display = 'inline';	
+	   }
+	   else{
+		document.getElementById('pass_conf').innerHTML = 'Incorrect password';
+		document.getElementById('pass_conf').style.display = 'inline';
+	   }
+	}
+	 
+   });
+}	
+
+}
+
+</script>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Profile Viewer</title>
+	<style type="text/css">
+	body{
+		font-family: arial;
+		margin:0px; 
+		background-color: #b9ccbf; 
+	}
+	header{
+		height: 70px;
+		width:100%;
+		background-color: #8e4d4d;
+	}
+	img{
+		margin:20px 0 0 20px;
+	}
+	p{
+		font-family: arial;
+		font-size: 20px;
+	}
+	content{
+		text-align: center;
+		position: relative;
+		top: 120px;
+	}
+	form{
+		margin-top: 30px;
+	}
+	input{
+		display: block;
+		margin: 30px 0 0 30px; 
+		margin-left: 45%;
+		padding: 10px;
+		border:none;
+
+	}
+	#submit{
+		border: none;
+		border-radius: 10px;
+		padding:10px;
+		background-color: #143d15;
+		color: white;
+
+	}
+	input:focus{
+		outline: none;
+		border:1px solid #965555;
+	}
+	#email_conf,#pass_conf,#confirm{
+		color: #ba3737;
+		display: none;
+	}
+	#email{
+		margin-bottom: 20px;
+	}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+	<header>
+		<img src="scared.png">
+	</header>
+	<content>
+		<p>Your details</p>
+        <p>name: <span id="name"></span></p>
+        <p>description: <span id="description"></span></p>
+	</content>
+</body>
+<script type="text/javascript">
+
+    function getUrlVars() {
+	    var vars = {};
+	    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
+	    function(m,key,value) {
+	      vars[key] = value;
+	    });
+	    return vars;
+	  	}
+          var name ;
+          var description;
+          var email = getUrlVars()["email"];
+          
+          var userData = JSON.parse(localStorage.getItem('users'));
+          for(var i=0;i<userData.length;i++){
+              if(userData[i].email == email ){
+                  name = userData[i].name;
+                  description = userData[i].description;
+              }
+          }
+	document.getElementById('name').innerHTML = name;
+		 
+	document.getElementById('description').innerHTML = description;
+    
+	
+</script>
+</html>
