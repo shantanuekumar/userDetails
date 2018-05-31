@@ -62,9 +62,8 @@
 		outline: none;
 		border:1px solid #965555;
 	}
-	#email_conf,#pass_conf,#confirm{
+	#email_conf{
 		color: #ba3737;
-		display: none;
 	}
 	#email{
 		margin-bottom: 20px;
@@ -93,7 +92,7 @@
 	<span id="right"></span>
     <form method="post" enctype="multipart/form-data" id="form">
         <input type="email" name="email" placeholder="Email" id="email" required>
-        <span id="email_conf">email already exists</span>
+        <span id="email_conf"></span>
         <input type="submit" value="add user" id="add_user">
 	</form>
 	
@@ -164,7 +163,7 @@ function getUrlVars() {
 
 
 if(!/^([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$)$/.test(email)){
-   document.getElementById('email_conf').style.display = 'block';
+   document.getElementById('email_conf').innerHTML = 'incorrect email';
 }
 
 
@@ -185,6 +184,7 @@ else{
 	 },
 	 error: function(err){
 		 console.log(err);
+		 document.getElementById('email_conf').innerHTML = 'email already exists';
 		
 	 }
 	 
