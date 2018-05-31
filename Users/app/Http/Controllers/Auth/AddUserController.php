@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\User;
+use DB;
 
 
 class AddUserController extends Controller
@@ -34,6 +35,18 @@ class AddUserController extends Controller
             // Here the request is validated. The validator method is located
             // inside the RegisterController, and makes sure the name, email
             // password and password_confirmation fields are required.
+        
+        
+            $data = $request->all();
+            
+            $condition = DB::select('select email from users where email like "'.$data['email'].'"');
+            
+            if($condition){
+                $response['error'] = 'email already registered';
+                $statusCode = 401;
+                return response()->json($response ,$statusCode);
+            }
+        
             $this->validator($request->all())->validate();
 
 
